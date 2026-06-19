@@ -7,10 +7,10 @@
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <style>
         :root {
-            --primary-color: #1e3a8a; /* Warna biru yang lebih lembut */
+            --primary-color: #1e3a8a; 
             --primary-hover: #1e40af;
             --secondary-color: #b91c1c;
-            --bg-color: #e2e8f0; /* Latar belakang dilembutkan agar tidak silau */
+            --bg-color: #e2e8f0; 
             --card-bg: #ffffff;
             --text-color: #1e293b;
             --text-light: #64748b;
@@ -86,7 +86,6 @@
         .kop-left { text-align: left; }
         .kop-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; }
         
-        /* Pengaturan Ulang Logo Kop Surat Proposional */
         .kop-logo img { max-width: 150px; max-height: 50px; object-fit: contain; margin-bottom: 8px; }
         
         .kop-address { font-size: 12px; line-height: 1.5; color: #000; }
@@ -95,7 +94,6 @@
 
         .surat-title { text-align: center; font-size: 20px; font-weight: 900; letter-spacing: 2px; text-decoration: underline; margin: 5px 0 20px; }
         
-        /* Barcode dipindah ke kanan atas */
         .barcode-container { margin-top: 5px; text-align: right; }
         #barcode { max-width: 120px; height: auto; }
 
@@ -162,7 +160,7 @@
             body > *:not(#printContainer) { display: none !important; }
             #printContainer { display: block !important; width: 100%; }
             
-            img { display: inline-block !important; } /* Memaksa tag gambar agar tetap terender */
+            img { display: inline-block !important; } 
 
             .print-page-wrapper { page-break-after: always; padding: 5mm 10mm; position: relative; }
             .print-page-wrapper:last-child { page-break-after: auto; }
@@ -251,7 +249,7 @@
                 </tr>
                 <tr>
                     <td class="label-col">Nama Supir/Kurir</td><td class="colon-col">:</td>
-                    <td class="input-col"><input type="text" id="sopir" required placeholder="Nama pengemudi"></td>
+                    <td class="input-col"><input type="text" id="sopir" required placeholder="Nama pengemudi" oninput="updateNamaSupir(this.value)"></td>
                     <td class="label-col">Plat Nomor</td><td class="colon-col">:</td>
                     <td class="input-col"><input type="text" id="platNomor" required placeholder="Contoh: A 05 PRO"></td>
                 </tr>
@@ -306,9 +304,9 @@
                     </div>
                 </div>
                 <div class="sig-box">
-                    <p>Supir,</p>
+                    <p>Supir/Kurir,</p>
                     <div class="blank-space"></div>
-                    <p><strong>(_________________)</strong></p>
+                    <p><strong>(<span id="namaSupirDisplay">_________________</span>)</strong></p>
                 </div>
                 <div class="sig-box">
                     <p>Penerima,</p>
@@ -422,6 +420,11 @@
                 button.parentNode.parentNode.remove(); 
                 calculateTotal(); 
             } else { alert('Minimal harus ada 1 barang!'); }
+        }
+
+        // Ditambahkan: Fungsi untuk mengubah nama di bagian tanda tangan
+        function updateNamaSupir(val) {
+            document.getElementById('namaSupirDisplay').innerText = val.trim() !== '' ? val : '_________________';
         }
 
         function customPrint() {
@@ -557,10 +560,14 @@
                     <td style="text-align: center;" class="aksi-col"><button type="button" class="btn btn-danger" onclick="deleteRow(this)">X</button></td>
                 </tr>
             `;
+            
+            // Ditambahkan: Atur ulang teks tanda tangan saat form di-reset
+            document.getElementById('namaSupirDisplay').innerText = '_________________';
+
             isDataSaved = false; 
             document.getElementById('notification').style.display = 'none';
             calculateTotal(); 
-            fetchNextNomorSuratJalan(); // Mengambil nomor urut bersih tanpa refresh halaman penuh
+            fetchNextNomorSuratJalan(); 
             window.scrollTo(0,0);
         }
     </script>
