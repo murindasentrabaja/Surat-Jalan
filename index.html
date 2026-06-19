@@ -31,7 +31,7 @@
             border-radius: 12px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08); text-align: center;
             margin-top: 10vh; border-top: 4px solid var(--primary-color);
         }
-        .login-container img { width: 140px; margin-bottom: 20px; } /* Ukuran logo di login disesuaikan */
+        .login-container img { width: 140px; margin-bottom: 20px; } 
         .login-container h2 { color: var(--primary-color); margin-bottom: 8px; font-size: 22px; }
         .login-container p { color: var(--text-light); font-size: 14px; margin-bottom: 30px; }
 
@@ -152,10 +152,18 @@
         #printContainer { display: none; }
 
         @media print {
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
             body { background: #fff; margin: 0; padding: 0; }
             body > *:not(#printContainer) { display: none !important; }
             #printContainer { display: block !important; width: 100%; }
             
+            img { display: inline-block !important; } /* Memaksa tag gambar agar tetap terender */
+
             .print-page-wrapper { page-break-after: always; padding: 5mm 10mm; position: relative; }
             .print-page-wrapper:last-child { page-break-after: auto; }
             
@@ -169,7 +177,7 @@
             .print-text { font-weight: bold; border-bottom: 1px dotted #000; display: inline-block; width: 100%; min-height: 18px; padding-left: 2px;}
             table.items { border: 1px solid #000; }
             table.items th, table.items td { border: 1px solid #000; padding: 6px 8px; }
-            table.items tfoot td { border: 1px solid #000; -webkit-print-color-adjust: exact; background-color: #eee; }
+            table.items tfoot td { border: 1px solid #000; background-color: #eee; }
             
             .print-footer { margin-top: 20px; font-size: 11px; text-align: left; border-top: 1px dashed #000; padding-top: 5px; font-style: italic; }
         }
@@ -479,7 +487,10 @@
                 printContainer.appendChild(pageWrapper);
             }
             
-            window.print();
+            // JEDA CETAK 500ms agar browser punya waktu untuk merender ulang gambar salinan
+            setTimeout(() => {
+                window.print();
+            }, 500);
         }
 
         function handleSubmit(event) {
