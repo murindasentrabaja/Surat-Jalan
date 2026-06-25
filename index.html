@@ -251,7 +251,7 @@
                 </tr>
                 <tr>
                     <td class="label-col">Nama Supir</td><td class="colon-col">:</td>
-                    <td class="input-col"><input type="text" id="sopir" required placeholder="Nama pengemudi"></td>
+                    <td class="input-col"><input type="text" id="sopir" required placeholder="Nama pengemudi" oninput="updateTtdSupir()"></td>
                     <td class="label-col">Plat Nomor</td><td class="colon-col">:</td>
                     <td class="input-col"><input type="text" id="platNomor" required placeholder="Contoh: A 05 PRO"></td>
                 </tr>
@@ -307,7 +307,7 @@
                 <div class="sig-box">
                     <p>Supir,</p>
                     <div class="blank-space"></div>
-                    <p><strong>(_________________)</strong></p>
+                    <p><strong>(<span id="teksTtdSupir">_________________</span>)</strong></p>
                 </div>
                 <div class="sig-box">
                     <p>Penerima,</p>
@@ -464,7 +464,11 @@
                     document.getElementById('penerima').value = data.header.penerima;
                     document.getElementById('tanggal').value = data.header.tanggal;
                     document.getElementById('alamat').value = data.header.alamat;
+                    
+                    // Memuat dan mengupdate nama supir
                     document.getElementById('sopir').value = data.header.sopir;
+                    updateTtdSupir(); 
+                    
                     document.getElementById('platNomor').value = data.header.platNomor;
 
                     JsBarcode("#barcode", data.header.noSuratJalan, { format: "CODE128", lineColor: "#000", width: 1.5, height: 35, displayValue: false, margin: 0 });
@@ -502,6 +506,19 @@
                 alert('Terjadi kesalahan saat memuat data Surat Jalan!');
                 console.error(err);
             });
+        }
+
+        // Fungsi baru untuk sinkronisasi teks tanda tangan supir
+        function updateTtdSupir() {
+            const namaSupir = document.getElementById('sopir').value;
+            const teksTtd = document.getElementById('teksTtdSupir');
+            
+            // Jika input kosong, kembalikan menjadi garis bawah
+            if (namaSupir.trim() === "") {
+                teksTtd.innerText = "_________________";
+            } else {
+                teksTtd.innerText = namaSupir;
+            }
         }
 
         function calculateTotal() {
@@ -660,7 +677,12 @@
         function resetForm() {
             document.getElementById('reprintSelect').value = "";
             document.getElementById('penerima').value = ''; document.getElementById('alamat').value = '';
-            document.getElementById('sopir').value = ''; document.getElementById('platNomor').value = '';
+            
+            // Mereset dan mengosongkan tanda tangan supir
+            document.getElementById('sopir').value = ''; 
+            updateTtdSupir(); 
+            
+            document.getElementById('platNomor').value = '';
             document.getElementById('tanggal').valueAsDate = new Date();
             document.getElementById('tableBody').innerHTML = `
                 <tr>
