@@ -52,7 +52,7 @@
         .btn-danger { background-color: var(--danger-color); color: white; width: auto; padding: 6px 12px; font-size: 12px; }
 
         /* Premium Action Buttons */
-        .action-buttons { display: flex; gap: 15px; margin-top: 35px; border-top: 1px solid #e2e8f0; padding-top: 25px; }
+        .action-buttons { display: flex; gap: 15px; margin-top: 20px; padding-top: 15px; }
         .btn-modern {
             display: inline-flex; align-items: center; justify-content: center; gap: 10px; 
             padding: 14px 24px; font-size: 14.5px; font-weight: 600; letter-spacing: 0.5px; 
@@ -123,19 +123,13 @@
         
         /* Secure Background Anti-Edit */
         .secure-bg {
-            border: 1px solid #1e3a8a;
-            border-radius: 8px;
-            padding: 10px;
-            position: relative;
+            border: 1px solid #1e3a8a; border-radius: 8px; padding: 10px; position: relative;
             background-color: #ffffff;
             background-image: repeating-linear-gradient(45deg, rgba(30, 58, 138, 0.04) 0px, rgba(30, 58, 138, 0.04) 2px, transparent 2px, transparent 6px);
-            overflow: hidden;
-            width: 100%;
-            max-width: 220px;
-            margin: 0 auto;
+            overflow: hidden; width: 100%; max-width: 220px; margin: 0 auto;
         }
         .secure-bg::after {
-            content: "MURINDA"; position: absolute; top: 50%; left: 50%;
+            content: "VALIDATED"; position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%) rotate(-30deg); font-size: 22px; font-weight: 900;
             color: rgba(30, 58, 138, 0.06); z-index: 0; pointer-events: none;
         }
@@ -146,20 +140,20 @@
         .auth-text { font-size: 10px; font-family: monospace; font-weight: bold; margin-top: 2px; }
         .blank-space { height: 75px; }
 
+        /* Custom Dropdown Print Ulang Area */
+        .reprint-section {
+            margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0; 
+            display: flex; align-items: center; justify-content: flex-end; gap: 10px;
+        }
+
         /* PRINT STYLES */
         #printContainer { display: none; }
 
         @media print {
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                color-adjust: exact !important;
-            }
-
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
             body { background: #fff; margin: 0; padding: 0; }
             body > *:not(#printContainer) { display: none !important; }
             #printContainer { display: block !important; width: 100%; }
-            
             img { display: inline-block !important; } 
 
             .print-page-wrapper { page-break-after: always; padding: 5mm 10mm; position: relative; }
@@ -186,8 +180,16 @@
     <div id="loginPage" class="login-container">
         <img src="Logo MSB.png" alt="Logo MSB">
         <h2>Sistem Logistik</h2>
-        <p>Silakan masuk menggunakan akun Kalijati</p>
-        <div class="form-group"><input type="text" id="username" class="form-control" placeholder="Username"></div>
+        <p>Silakan masuk menggunakan akun yang terdaftar</p>
+        
+        <div class="form-group">
+            <select id="username" class="form-control" style="cursor: pointer;">
+                <option value="">-- Pilih Nama Anda --</option>
+                <option value="Aspuro Amarulloh Khoiri">Aspuro Amarulloh Khoiri</option>
+                <option value="Asep Suherman">Asep Suherman</option>
+            </select>
+        </div>
+
         <div class="form-group"><input type="password" id="password" class="form-control" placeholder="Password" onkeydown="if(event.key === 'Enter') handleLogin()"></div>
         <button id="loginBtn" class="btn btn-primary" onclick="handleLogin()">Masuk Sistem</button>
         <div id="loginError" class="hidden" style="color:red; font-size:12px; margin-top:10px;">Username/password salah!</div>
@@ -202,7 +204,7 @@
         <div class="dashboard-header">
             <div><h1 style="color:var(--primary-color); font-size: 20px;">Form Input Surat Jalan</h1></div>
             <div style="text-align: right;">
-                <div style="font-size:13px; font-weight:bold;">Login System: Kalijati</div>
+                <div id="loginIndicator" style="font-size:13px; font-weight:bold;">Login System: </div>
                 <div style="font-size:12px; color:var(--danger-color); cursor:pointer; text-decoration:underline;" onclick="handleLogout()">Keluar</div>
             </div>
         </div>
@@ -248,8 +250,8 @@
                     <td class="input-col"><input type="text" id="alamat" required placeholder="Alamat pengiriman"></td>
                 </tr>
                 <tr>
-                    <td class="label-col">Nama Supir/Kurir</td><td class="colon-col">:</td>
-                    <td class="input-col"><input type="text" id="sopir" required placeholder="Nama pengemudi" oninput="updateNamaSupir(this.value)"></td>
+                    <td class="label-col">Nama Supir</td><td class="colon-col">:</td>
+                    <td class="input-col"><input type="text" id="sopir" required placeholder="Nama pengemudi"></td>
                     <td class="label-col">Plat Nomor</td><td class="colon-col">:</td>
                     <td class="input-col"><input type="text" id="platNomor" required placeholder="Contoh: A 05 PRO"></td>
                 </tr>
@@ -297,16 +299,15 @@
                 <div class="sig-box">
                     <div class="secure-bg">
                         <p style="font-size: 11px;">Ditanda Tangani Secara Digital Oleh</p>
-                        <p style="font-weight: bold;">Administration</p>
-                        <div class="qr-container"><img src="Aspuro Amarulloh.png" alt="QR Tanda Tangan"></div>
-                        <p style="font-weight: bold; text-decoration: underline; font-size: 13px;">Aspuro Amarulloh Khoiri</p>
+                        <div class="qr-container"><img id="ttdQR" src="" alt="QR Tanda Tangan"></div>
+                        <p id="ttdNama" style="font-weight: bold; text-decoration: underline; font-size: 13px;">Nama User</p>
                         <div id="authCode" class="auth-text"></div>
                     </div>
                 </div>
                 <div class="sig-box">
-                    <p>Supir/Kurir,</p>
+                    <p>Supir,</p>
                     <div class="blank-space"></div>
-                    <p><strong>(<span id="namaSupirDisplay">_________________</span>)</strong></p>
+                    <p><strong>(_________________)</strong></p>
                 </div>
                 <div class="sig-box">
                     <p>Penerima,</p>
@@ -316,6 +317,14 @@
             </div>
 
             <div class="print-footer hidden-on-screen"></div>
+        </div>
+
+        <div class="reprint-section">
+            <label for="reprintSelect" style="font-size: 13px; font-weight: bold; color: var(--text-light);">Cetak Ulang Surat Jalan:</label>
+            <select id="reprintSelect" class="form-control" style="width: 250px; cursor: pointer;" onchange="loadSuratJalan()">
+                <option value="">-- Pilih No. Surat Jalan --</option>
+            </select>
+            <span id="loadingReprint" style="font-size: 12px; color: var(--primary-color); display: none;">Memuat...</span>
         </div>
 
         <div class="action-buttons">
@@ -338,24 +347,54 @@
     <div id="printContainer"></div>
 
     <script>
-        const webAppUrl = "https://script.google.com/macros/s/AKfycbzGQS751BLBC4O0oqn4HtIRBW6uNQr8HF3uoLK7IR3cUYvKGE7hKL8rPBNltwE6Bbya/exec"; 
+        // MASUKAN URL WEB APP GAS ANDA PADA VARIABEL DI BAWAH INI
+        const webAppUrl = "https://script.google.com/macros/s/AKfycbxMYcGZAhx0rSXQh3fAUJSFIn3AATOTP09DUuDpvpIjLXFFvdBmMblGZwUNCVO0o0tr/exec"; 
 
-        window.onload = function() { if (sessionStorage.getItem('isLoggedIn') === 'true') showDashboard(); }
+        window.onload = function() { 
+            if (sessionStorage.getItem('isLoggedIn') === 'true') showDashboard(); 
+        }
 
         let isDataSaved = false; 
 
         function handleLogin() {
-            if (document.getElementById('username').value === 'Kalijati' && document.getElementById('password').value === '113300') {
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value.trim();
+            
+            let isValid = false;
+            let qrLink = "";
+
+            if (user === 'Aspuro Amarulloh Khoiri' && pass === '020109') {
+                isValid = true;
+                qrLink = "https://tinyurl.com/MSB-Aspuro";
+            } else if (user === 'Asep Suherman' && pass === '12345') {
+                isValid = true;
+                qrLink = "https://tinyurl.com/MSB-Asep-Suherman";
+            }
+
+            if (isValid) {
                 document.getElementById('loginError').classList.add('hidden');
-                sessionStorage.setItem('isLoggedIn', 'true'); showDashboard();
-            } else { document.getElementById('loginError').classList.remove('hidden'); }
+                sessionStorage.setItem('isLoggedIn', 'true');
+                sessionStorage.setItem('loggedUser', user);
+                sessionStorage.setItem('loggedQR', qrLink);
+                showDashboard();
+            } else { 
+                document.getElementById('loginError').classList.remove('hidden'); 
+            }
         }
 
-        function handleLogout() { sessionStorage.removeItem('isLoggedIn'); location.reload(); }
+        function handleLogout() { sessionStorage.clear(); location.reload(); }
 
         function showDashboard() {
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('mainDashboard').classList.remove('hidden');
+            
+            const activeUser = sessionStorage.getItem('loggedUser');
+            const activeQR = sessionStorage.getItem('loggedQR');
+
+            document.getElementById('loginIndicator').innerText = "Login System: " + activeUser;
+            document.getElementById('ttdNama').innerText = activeUser;
+            document.getElementById('ttdQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(activeQR)}`;
+
             document.getElementById('tanggal').valueAsDate = new Date();
             calculateTotal(); 
             fetchNextNomorSuratJalan();
@@ -367,7 +406,7 @@
                 return;
             }
             
-            document.getElementById('noSuratJalan').value = "Mengambil nomor...";
+            document.getElementById('noSuratJalan').value = "Mengambil data...";
             
             fetch(webAppUrl)
             .then(response => response.json())
@@ -381,10 +420,87 @@
                     const randomAuth = Math.random().toString(36).substring(2, 8).toUpperCase();
                     document.getElementById('authCode').innerText = `No. Auth: ${dateStr}-${randomAuth}`;
                 }
+
+                if (data.listSJ) {
+                    const select = document.getElementById('reprintSelect');
+                    select.innerHTML = '<option value="">-- Pilih No. Surat Jalan --</option>';
+                    data.listSJ.forEach(sj => {
+                        const option = document.createElement('option');
+                        option.value = sj;
+                        option.text = sj;
+                        select.appendChild(option);
+                    });
+                }
             })
             .catch(err => {
-                alert("Gagal sinkronisasi nomor urut dengan Spreadsheet: " + err.message);
+                console.error(err);
                 document.getElementById('noSuratJalan').value = "Gagal memuat";
+            });
+        }
+
+        function loadSuratJalan() {
+            const select = document.getElementById('reprintSelect');
+            const noSJ = select.value;
+            const loading = document.getElementById('loadingReprint');
+            const notification = document.getElementById('notification');
+
+            if (!noSJ) {
+                resetForm();
+                return;
+            }
+
+            select.disabled = true;
+            loading.style.display = 'inline';
+            notification.style.display = 'none';
+
+            fetch(`${webAppUrl}?action=getDetail&no_sj=${encodeURIComponent(noSJ)}`)
+            .then(res => res.json())
+            .then(data => {
+                select.disabled = false;
+                loading.style.display = 'none';
+
+                if (data.header && data.header.noSuratJalan) {
+                    document.getElementById('noSuratJalan').value = data.header.noSuratJalan;
+                    document.getElementById('penerima').value = data.header.penerima;
+                    document.getElementById('tanggal').value = data.header.tanggal;
+                    document.getElementById('alamat').value = data.header.alamat;
+                    document.getElementById('sopir').value = data.header.sopir;
+                    document.getElementById('platNomor').value = data.header.platNomor;
+
+                    JsBarcode("#barcode", data.header.noSuratJalan, { format: "CODE128", lineColor: "#000", width: 1.5, height: 35, displayValue: false, margin: 0 });
+
+                    const tbody = document.getElementById('tableBody');
+                    tbody.innerHTML = '';
+                    
+                    if (data.items && data.items.length > 0) {
+                        data.items.forEach(item => {
+                            const newRow = document.createElement('tr');
+                            newRow.innerHTML = `
+                                <td><input type="text" class="form-control item-nama" required placeholder="Nama barang" value="${item.namaBarang}"></td>
+                                <td><input type="number" class="form-control item-jumlah" required min="1" placeholder="0" oninput="calculateTotal()" value="${item.jumlah}"></td>
+                                <td><input type="text" list="satuanOptions" class="form-control item-satuan" required placeholder="Pilih" value="${item.satuan}"></td>
+                                <td><input type="text" class="form-control item-ket" placeholder="-" value="${item.keterangan}"></td>
+                                <td style="text-align: center;" class="aksi-col"><button type="button" class="btn btn-danger" onclick="deleteRow(this)">X</button></td>
+                            `;
+                            tbody.appendChild(newRow);
+                        });
+                    } else {
+                        addRow(); 
+                    }
+
+                    calculateTotal();
+                    isDataSaved = true; 
+                    
+                    notification.style.display = 'block'; 
+                    notification.style.backgroundColor = '#dbeafe'; notification.style.color = '#1e40af';
+                    notification.innerText = 'Data Surat Jalan berhasil dimuat. Siap untuk dicetak ulang.';
+                }
+            })
+            .catch(err => {
+                select.disabled = false;
+                loading.style.display = 'none';
+                alert('Terjadi kesalahan saat memuat data Surat Jalan!');
+                console.error(err);
             });
         }
 
@@ -420,11 +536,6 @@
                 button.parentNode.parentNode.remove(); 
                 calculateTotal(); 
             } else { alert('Minimal harus ada 1 barang!'); }
-        }
-
-        // Ditambahkan: Fungsi untuk mengubah nama di bagian tanda tangan
-        function updateNamaSupir(val) {
-            document.getElementById('namaSupirDisplay').innerText = val.trim() !== '' ? val : '_________________';
         }
 
         function customPrint() {
@@ -490,10 +601,7 @@
                 printContainer.appendChild(pageWrapper);
             }
             
-            // JEDA CETAK 500ms agar browser punya waktu untuk merender ulang gambar salinan
-            setTimeout(() => {
-                window.print();
-            }, 500);
+            setTimeout(() => { window.print(); }, 500);
         }
 
         function handleSubmit(event) {
@@ -524,7 +632,7 @@
                 items: items
             };
 
-            const saveBtnTemplate = `<svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg> Simpan ke Spreadsheet`;
+            const saveBtnTemplate = `<svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg> Simpan`;
 
             fetch(webAppUrl, { 
                 method: 'POST', 
@@ -537,7 +645,8 @@
                     notif.style.display = 'block'; notif.style.backgroundColor = '#d1fae5'; notif.style.color = '#065f46';
                     notif.innerText = 'Berhasil Disimpan! Silakan cetak surat jalan.';
                     
-                    isDataSaved = true; 
+                    isDataSaved = true;
+                    fetchNextNomorSuratJalan(); 
                 } else {
                     throw new Error(result.message);
                 }
@@ -549,8 +658,10 @@
         }
 
         function resetForm() {
+            document.getElementById('reprintSelect').value = "";
             document.getElementById('penerima').value = ''; document.getElementById('alamat').value = '';
             document.getElementById('sopir').value = ''; document.getElementById('platNomor').value = '';
+            document.getElementById('tanggal').valueAsDate = new Date();
             document.getElementById('tableBody').innerHTML = `
                 <tr>
                     <td><input type="text" class="form-control item-nama" required placeholder="Nama barang"></td>
@@ -560,14 +671,10 @@
                     <td style="text-align: center;" class="aksi-col"><button type="button" class="btn btn-danger" onclick="deleteRow(this)">X</button></td>
                 </tr>
             `;
-            
-            // Ditambahkan: Atur ulang teks tanda tangan saat form di-reset
-            document.getElementById('namaSupirDisplay').innerText = '_________________';
-
             isDataSaved = false; 
             document.getElementById('notification').style.display = 'none';
             calculateTotal(); 
-            fetchNextNomorSuratJalan(); 
+            fetchNextNomorSuratJalan();
             window.scrollTo(0,0);
         }
     </script>
